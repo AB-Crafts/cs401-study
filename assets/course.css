@@ -1,0 +1,387 @@
+/* CS401 Teaching Workspace — Shared Tufte-Inspired Stylesheet */
+
+:root {
+  --bg: #fffff8;
+  --surface: #f7f6ee;
+  --surface-strong: #efede0;
+  --ink: #1a1a18;
+  --muted: #595950;
+  --accent: #8b2635;
+  --accent-soft: #f5e6e8;
+  --ok: #1f6b45;
+  --ok-bg: #e7f4ec;
+  --err: #9c2b23;
+  --err-bg: #fbeae8;
+  --border: #dcd8c8;
+  --mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --serif: "ETBook", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 18px;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 2.5rem 1.5rem 4.5rem;
+  font-family: var(--serif);
+  line-height: 1.65;
+}
+
+.page {
+  max-width: 740px;
+  margin: 0 auto;
+}
+
+/* Top navigation */
+.course-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  margin-bottom: 2.25rem;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.course-nav .course-tag {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.course-nav nav {
+  display: flex;
+  gap: 1.1rem;
+}
+
+.course-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.course-nav a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+/* Headings */
+header.lesson-header {
+  margin-bottom: 2rem;
+}
+
+.lesson-meta {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+h1 {
+  font-weight: 400;
+  font-size: 2.15rem;
+  line-height: 1.18;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 1.08rem;
+  font-style: italic;
+  color: var(--muted);
+  margin: 0;
+}
+
+h2 {
+  font-weight: 400;
+  font-size: 1.4rem;
+  margin: 2.4rem 0 0.8rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+h3 {
+  font-weight: 600;
+  font-size: 1.05rem;
+  font-family: var(--sans);
+  margin: 1.5rem 0 0.5rem;
+}
+
+p {
+  margin: 0 0 1.05rem;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.84em;
+  background: var(--surface);
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+
+/* Callouts & boxes */
+.callout {
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.callout-title {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+
+.callout p:last-child {
+  margin-bottom: 0;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.92rem;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+th {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  border-bottom: 2px solid var(--ink);
+}
+
+/* Diagrams */
+.figure {
+  margin: 1.75rem 0;
+  padding: 1.25rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.figure figcaption {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.75rem;
+}
+
+/* Interactive panels */
+.interactive-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.35rem;
+  margin: 1.75rem 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.interactive-card .card-label {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+}
+
+/* Quiz component styles */
+.quiz-question {
+  padding: 1.15rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.quiz-question:first-of-type {
+  border-top: none;
+  padding-top: 0.4rem;
+}
+
+.quiz-prompt {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 0.96rem;
+  margin-bottom: 0.75rem;
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.55rem;
+}
+
+.quiz-option {
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.quiz-option:hover:not(:disabled) {
+  border-color: var(--ink);
+  background: var(--surface-strong);
+}
+
+.quiz-option.is-correct {
+  background: var(--ok-bg);
+  border-color: var(--ok);
+  color: var(--ok);
+  font-weight: 600;
+}
+
+.quiz-option.is-wrong {
+  background: var(--err-bg);
+  border-color: var(--err);
+  color: var(--err);
+}
+
+.quiz-feedback {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  margin-top: 0.65rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 4px;
+  display: none;
+}
+
+.quiz-feedback.show {
+  display: block;
+}
+
+.quiz-feedback.ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+
+.quiz-feedback.err {
+  background: var(--err-bg);
+  color: var(--err);
+}
+
+.quiz-scorebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.btn {
+  font-family: var(--sans);
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 0.5rem 0.95rem;
+  border-radius: 4px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: 0.88;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--ink);
+}
+
+/* Citations & Footer */
+.sources {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.sources ul {
+  padding-left: 1.2rem;
+}
+
+.teacher-note {
+  margin-top: 2.5rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+}
+
+.teacher-note strong {
+  color: var(--accent);
+}
+
+/* Print optimization for reference sheets and review */
+@media print {
+  html {
+    font-size: 11pt;
+    background: #fff;
+  }
+  body {
+    padding: 0;
+  }
+  .course-nav, .interactive-card, .teacher-note, .no-print {
+    display: none;
+  }
+  a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .figure, .callout {
+    break-inside: avoid;
+  }
+}

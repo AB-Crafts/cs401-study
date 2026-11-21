@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS401 Glossary — Reference Sheet</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+  <div class="page">
+    <div class="course-nav">
+      <span class="course-tag">CS401 Reference</span>
+      <nav>
+        <a href="../lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a>
+        <a href="glossary.html">Glossary</a>
+      </nav>
+    </div>
+
+    <header class="lesson-header">
+      <div class="lesson-meta">Quick Reference &middot; Print-Friendly</div>
+      <h1>CS401 Glossary</h1>
+      <p class="subtitle">Plain-English definitions paired with the exact exam terms used across every CS401 lesson.</p>
+    </header>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 24%;">Term</th>
+          <th>Definition</th>
+          <th style="width: 15%;">Lesson</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="bit">
+          <td><strong>Bit</strong></td>
+          <td>The smallest unit of information in a computer: a single switch that is either <strong>OFF (0)</strong> or <strong>ON (1)</strong>.</td>
+          <td><a href="../lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a></td>
+        </tr>
+        <tr id="byte">
+          <td><strong>Byte</strong></td>
+          <td>A group of <strong>8 bits</strong> side by side. One byte can store a number from 0 to 255 (or a single text character like <code>'A'</code>). Each memory locker holds 1 byte.</td>
+          <td><a href="../lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a></td>
+        </tr>
+        <tr id="cpu">
+          <td><strong>CPU (Processor)</strong></td>
+          <td>The "chef" / brain of the computer: fetches instructions from memory, understands them, and does math and logic using its internal registers.</td>
+          <td><a href="../lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a></td>
+        </tr>
+        <tr id="memory-cell">
+          <td><strong>Memory (RAM)</strong></td>
+          <td>The "pantry": a huge wall of numbered lockers, each holding 1 byte. Holds both your program's instructions and its data. Memory is passive ("dumb")—it only obeys the CPU.</td>
+          <td><a href="../lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a></td>
+        </tr>
+        <tr id="register">
+          <td><strong>Register</strong></td>
+          <td>The "cutting board": a tiny, ultra-fast storage slot built directly inside the CPU so it can hold and work on numbers without walking back to RAM every step.</td>
+          <td><a href="../lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a></td>
+        </tr>
+        <tr id="address-bus">
+          <td><strong>Address Bus</strong></td>
+          <td>A <em>one-way (unidirectional)</em> bundle of wires from CPU to RAM that carries the locker number (<strong>where</strong> to read or write). On the Intel 8088, it has <strong>20 wires (20 bits)</strong>, allowing 1 MB of lockers.</td>
+          <td><a href="../lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a></td>
+        </tr>
+        <tr id="data-bus">
+          <td><strong>Data Bus</strong></td>
+          <td>A <em>two-way (bidirectional)</em> bundle of wires that carries the actual byte (<strong>what</strong> is being moved) between CPU and RAM. On the Intel 8088, it is <strong>8 bits wide</strong> (1 byte at a time).</td>
+          <td><a href="../lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a></td>
+        </tr>
+        <tr id="control-bus">
+          <td><strong>Control Bus</strong></td>
+          <td>Wires carrying command and timing signals (like <code>READ</code> or <code>WRITE</code>) telling RAM <strong>what action</strong> to perform and when.</td>
+          <td><a href="../lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a></td>
+        </tr>
+        <tr id="iapx88">
+          <td><strong>iAPX88 (Intel 8088)</strong></td>
+          <td>The microprocessor taught in the first half of VU CS401 (used in the original IBM PC). It has a <strong>16-bit</strong> internal design, <strong>14 registers</strong>, a <strong>20-bit address bus</strong> (1 MB RAM), and an <strong>8-bit data bus</strong>.</td>
+          <td><a href="../lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a></td>
+        </tr>
+        <tr id="assembly-language">
+          <td><strong>Assembly Language</strong></td>
+          <td>A human-readable shorthand for the CPU's raw 0s and 1s (machine code), using short words like <code>MOV</code> and <code>ADD</code>.</td>
+          <td><a href="../lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="teacher-note">
+      <strong>Tip:</strong> Press <code>Ctrl+P</code> (or <code>Cmd+P</code>) to print this glossary cleanly—navigation hides automatically in print view.
+    </div>
+  </div>
+</body>
+</html>

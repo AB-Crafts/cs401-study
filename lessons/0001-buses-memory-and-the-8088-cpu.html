@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 01: From Zero to the Intel 8088 — CS401</title>
+  <link rel="stylesheet" href="../assets/course.css">
+  <style>
+    .bits-row {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 0.4rem;
+      margin: 0.9rem 0;
+    }
+    .bit-btn {
+      font-family: var(--mono);
+      padding: 0.65rem 0.2rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.12s ease;
+    }
+    .bit-btn .bit-val {
+      display: block;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .bit-btn .bit-wt {
+      display: block;
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+    .bit-btn.is-on {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .bit-btn.is-on .bit-val,
+    .bit-btn.is-on .bit-wt {
+      color: #fff;
+    }
+    .byte-readout {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      padding: 0.65rem 0.85rem;
+      background: var(--surface);
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    .sim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    .sim-field {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.75rem;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+    }
+    .sim-field label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--ink);
+    }
+    .sim-field select {
+      width: 100%;
+      padding: 0.45rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: #fff;
+    }
+    .sim-task {
+      font-family: var(--sans);
+      font-size: 0.95rem;
+      padding: 0.75rem 1rem;
+      background: var(--accent-soft);
+      border-radius: 4px;
+      margin-bottom: 0.9rem;
+    }
+    .sim-actions {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .spec-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+    .spec-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.85rem;
+      text-align: center;
+    }
+    .spec-num {
+      font-family: var(--mono);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+    }
+    .spec-label {
+      font-family: var(--sans);
+      font-size: 0.76rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="course-nav">
+      <span class="course-tag">CS401 &middot; Lesson 01 (From Scratch)</span>
+      <nav>
+        <a href="0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a>
+        <a href="../reference/glossary.html">Glossary</a>
+      </nav>
+    </div>
+
+    <header class="lesson-header">
+      <div class="lesson-meta">VU CS401 Lecture 1 &middot; Built From Zero &middot; ~7 Minutes</div>
+      <h1>From Switches to the Intel 8088</h1>
+      <p class="subtitle">Zero prior hardware knowledge required: bits, bytes, why assembly exists, and how a CPU talks to memory.</p>
+    </header>
+
+    <div class="callout">
+      <div class="callout-title">Your Win For This Lesson</div>
+      <p>By the end of this page, you will understand <strong>what a computer is actually doing underneath C++ or Python</strong>: how 0s and 1s travel between the CPU and memory over three sets of wires, why registers exist, and the four numbers you need to know about the Intel 8088 for VU CS401 exams.</p>
+    </div>
+
+    <h2>1. Start at Rock Bottom: Bits &amp; Bytes</h2>
+    <p>Inside a computer, there are no English letters, no Python, and no decimal digits like <code>5</code> or <code>9</code>. At the lowest level, a computer only understands <strong>electricity ON or OFF</strong>.</p>
+    <p>We call one tiny ON/OFF switch a <a href="../reference/glossary.html#bit"><strong>bit</strong></a>: <code>0</code> means OFF, <code>1</code> means ON. One switch can only say two things (0 or 1), which isn't very useful alone. So computers group <strong>8 bits together</strong> and call that bundle a <a href="../reference/glossary.html#byte"><strong>byte</strong></a>.</p>
+    <p>With 8 switches in a row, you can make <code>256</code> different patterns—representing any number from <code>0</code> to <code>255</code>, or a single letter like <code>A</code>. Try flipping the 8 switches below right now:</p>
+
+    <div class="interactive-card" id="byte-widget">
+      <div class="card-label">Hands-On &middot; Make a Byte (8 Bits)</div>
+      <p style="font-family: var(--sans); font-size: 0.88rem; margin-bottom: 0.5rem;">Click any switch to turn it ON (<code>1</code>) or OFF (<code>0</code>). Each switch has a value (128, 64, 32&hellip; 1). Add the ON switches to get the number!</p>
+      <div class="bits-row" id="bits-row"></div>
+      <div class="byte-readout">
+        <span>Binary pattern: <code id="bin-out">00000000</code></span>
+        <span>Decimal value: <strong id="dec-out" style="color: var(--accent);">0</strong></span>
+        <button type="button" class="btn btn-secondary" id="btn-target">Challenge Me</button>
+      </div>
+      <div class="quiz-feedback" id="byte-fb"></div>
+    </div>
+
+    <h2>2. Why Do We Learn Assembly Language?</h2>
+    <p>Because a CPU only understands raw 0s and 1s (called <strong>machine code</strong>), giving it an instruction like "add two numbers" originally looked like <code>00000011 11000011</code>. Humans make mistakes reading walls of 0s and 1s.</p>
+    <p><a href="../reference/glossary.html#assembly-language"><strong>Assembly Language</strong></a> simply gives those 0s and 1s short human names—like <code>MOV</code> (move data) and <code>ADD</code> (add numbers). High-level languages like C++ or Python hide the hardware from you; Assembly removes the curtain so you talk <em>directly</em> to the processor (<a href="https://www.vu.edu.pk/" target="_blank" rel="noopener">VU CS401 Lecture 1</a>).</p>
+
+    <h2>3. The Kitchen Analogy: CPU, Registers &amp; Memory</h2>
+    <p>Imagine a kitchen with two spaces:</p>
+    <ul>
+      <li><strong>Memory (<a href="../reference/glossary.html#memory-cell">RAM</a>) is the giant pantry.</strong> It has thousands of numbered lockers (Locker #0, Locker #1, Locker #2&hellip;), and each locker holds <strong>1 byte</strong>. The pantry is "dumb"—it just stores things. It cannot chop or cook.</li>
+      <li><strong>The <a href="../reference/glossary.html#cpu">CPU</a> is the chef.</strong> The chef does all the work (adding, comparing, deciding).</li>
+      <li><strong><a href="../reference/glossary.html#register">Registers</a> are the chef's tiny cutting board.</strong> Walking back and forth to the pantry for every tiny step is slow. So the CPU keeps a handful of tiny, super-fast storage slots <em>right inside itself</em> to hold the numbers it is actively working on.</li>
+    </ul>
+
+    <h2>4. The Three Buses: How the Chef Talks to the Pantry</h2>
+    <p>How does the CPU actually fetch a byte from Locker #5 in RAM, or store a byte back into Locker #12? Through bundles of copper wires called <strong>system buses</strong> (<a href="https://archive.org/details/intel-8086-family-users-manual" target="_blank" rel="noopener">Intel 8086 Family User's Manual</a>). Think of a bus as a multi-lane highway where each lane is 1 wire carrying 1 bit (0 or 1):</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Bus</th>
+          <th>Plain-English Job</th>
+          <th>Direction</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="../reference/glossary.html#address-bus"><strong>Address Bus</strong></a></td>
+          <td>Says <strong>WHERE</strong>: sends the locker number (e.g., "Open Locker #5!").</td>
+          <td>One-way (CPU &rarr; RAM)</td>
+        </tr>
+        <tr>
+          <td><a href="../reference/glossary.html#data-bus"><strong>Data Bus</strong></a></td>
+          <td>Carries <strong>WHAT</strong>: the actual byte moving in or out of that locker.</td>
+          <td>Two-way (CPU &harr; RAM)</td>
+        </tr>
+        <tr>
+          <td><a href="../reference/glossary.html#control-bus"><strong>Control Bus</strong></a></td>
+          <td>Says <strong>WHICH ACTION</strong>: tells RAM whether to <code>READ</code> (give me the byte) or <code>WRITE</code> (save this byte).</td>
+          <td>Control &amp; timing signals</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <figure class="figure">
+      <svg viewBox="0 0 660 200" width="100%" role="img" aria-label="CPU connected to RAM via Address, Data, and Control Buses">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#1a1a18"/>
+          </marker>
+          <marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="#8b2635"/>
+          </marker>
+        </defs>
+        <!-- CPU Box -->
+        <rect x="20" y="20" width="175" height="160" rx="6" fill="#f7f6ee" stroke="#1a1a18" stroke-width="1.5"/>
+        <text x="107" y="48" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#1a1a18">CPU (The Chef)</text>
+        <text x="107" y="65" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#595950">Intel 8088</text>
+        <rect x="38" y="80" width="139" height="82" rx="4" fill="#ffffff" stroke="#dcd8c8"/>
+        <text x="107" y="102" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#8b2635">14 Registers</text>
+        <text x="107" y="121" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10.5" fill="#595950">(Cutting board slots</text>
+        <text x="107" y="137" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10.5" fill="#595950">built inside CPU)</text>
+
+        <!-- Memory Box -->
+        <rect x="465" y="20" width="175" height="160" rx="6" fill="#f7f6ee" stroke="#1a1a18" stroke-width="1.5"/>
+        <text x="552" y="48" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#1a1a18">RAM (The Pantry)</text>
+        <rect x="485" y="66" width="135" height="24" fill="#ffffff" stroke="#dcd8c8"/>
+        <text x="552" y="82" text-anchor="middle" font-family="monospace" font-size="11" fill="#1a1a18">Locker #5:  [42]</text>
+        <rect x="485" y="95" width="135" height="24" fill="#ffffff" stroke="#dcd8c8"/>
+        <text x="552" y="111" text-anchor="middle" font-family="monospace" font-size="11" fill="#1a1a18">Locker #6:  [19]</text>
+        <rect x="485" y="124" width="135" height="24" fill="#ffffff" stroke="#dcd8c8"/>
+        <text x="552" y="140" text-anchor="middle" font-family="monospace" font-size="11" fill="#1a1a18">Locker #7:  [99]</text>
+        <text x="552" y="168" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#595950">Up to 1,048,576 lockers (1 MB)</text>
+
+        <!-- Address Bus -->
+        <line x1="197" y1="58" x2="457" y2="58" stroke="#8b2635" stroke-width="2.5" marker-end="url(#arrow-accent)"/>
+        <text x="330" y="48" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#8b2635">Address Bus: "Which locker?"</text>
+
+        <!-- Data Bus -->
+        <line x1="205" y1="104" x2="457" y2="104" stroke="#1a1a18" stroke-width="2.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+        <text x="330" y="94" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#1a1a18">Data Bus: "The byte itself"</text>
+
+        <!-- Control Bus -->
+        <line x1="197" y1="150" x2="457" y2="150" stroke="#595950" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+        <text x="330" y="140" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#595950">Control Bus: "READ or WRITE?"</text>
+      </svg>
+      <figcaption>Figure 1: Every memory operation uses all three buses at once.</figcaption>
+    </figure>
+
+    <h2>5. Meet Your CPU: The Intel 8088 (iAPX88)</h2>
+    <p>In CS401, you learn Assembly on the <a href="../reference/glossary.html#iapx88"><strong>Intel 8088</strong></a> (also called <strong>iAPX88</strong>)—the exact chip used in the very first IBM Personal Computer. Why do universities still teach it? Because it is simple enough to hold completely in your head, yet every modern Intel/AMD laptop today is a direct descendant of it!</p>
+    <p>Here are the four numbers about the 8088 that show up constantly in VU CS401 quizzes:</p>
+
+    <div class="spec-strip">
+      <div class="spec-box">
+        <span class="spec-num">16-bit</span>
+        <span class="spec-label">Inside the CPU</span>
+      </div>
+      <div class="spec-box">
+        <span class="spec-num">14</span>
+        <span class="spec-label">Internal Registers</span>
+      </div>
+      <div class="spec-box">
+        <span class="spec-num">20-bit</span>
+        <span class="spec-label">Address Bus (1 MB)</span>
+      </div>
+      <div class="spec-box">
+        <span class="spec-num">8-bit</span>
+        <span class="spec-label">External Data Bus</span>
+      </div>
+    </div>
+
+    <p><strong>What do those wire counts mean in plain English?</strong></p>
+    <ul>
+      <li><strong>8-bit Data Bus:</strong> There are 8 data wires, so the 8088 moves <strong>1 byte (8 bits) at a time</strong> to or from RAM.</li>
+      <li><strong>20-bit Address Bus:</strong> There are 20 address wires. Since each wire can be 0 or 1, 20 wires can create <code>2<sup>20</sup> = 1,048,576</code> unique locker numbers—which is <strong>1 Megabyte (1 MB)</strong> of RAM!</li>
+      <li><strong>16-bit Internal / 14 Registers:</strong> Inside the chip, its 14 cutting-board slots (registers) are 16 bits wide (2 bytes each).</li>
+    </ul>
+
+    <h2>6. Practice: Drive the Buses Yourself</h2>
+    <div class="interactive-card" id="bus-sim">
+      <div class="card-label">Interactive Drill &middot; Bus Cycle Simulator</div>
+      <p style="font-family: var(--sans); font-size: 0.9rem; margin-bottom: 0.8rem;">Set all three buses to complete the CPU's job, then click <strong>Execute Cycle</strong>.</p>
+      <div class="sim-task" id="sim-task"></div>
+      <div class="sim-grid">
+        <div class="sim-field">
+          <label for="sel-addr">Address Bus (Where?)</label>
+          <select id="sel-addr">
+            <option value="">-- Choose value --</option>
+            <option value="5">Locker #5</option>
+            <option value="12">Locker #12</option>
+            <option value="42">The number 42 (data)</option>
+          </select>
+        </div>
+        <div class="sim-field">
+          <label for="sel-ctrl">Control Bus (Action?)</label>
+          <select id="sel-ctrl">
+            <option value="">-- Choose signal --</option>
+            <option value="READ">READ</option>
+            <option value="WRITE">WRITE</option>
+          </select>
+        </div>
+        <div class="sim-field">
+          <label for="sel-data">Data Bus (Which way?)</label>
+          <select id="sel-data">
+            <option value="">-- Choose direction --</option>
+            <option value="RAM_TO_CPU">RAM &rarr; CPU</option>
+            <option value="CPU_TO_RAM">CPU &rarr; RAM</option>
+          </select>
+        </div>
+      </div>
+      <div class="sim-actions">
+        <button type="button" class="btn" id="btn-run">Execute Cycle</button>
+        <button type="button" class="btn btn-secondary" id="btn-next">Next Scenario</button>
+      </div>
+      <div class="quiz-feedback" id="sim-feedback"></div>
+    </div>
+
+    <h2>7. Quick Check (From Memory)</h2>
+    <p>Try answering these 4 questions without scrolling back up—pulling answers from memory is what makes them stick for exams.</p>
+    <div class="interactive-card" data-quiz>
+      <div class="card-label">Retrieval Practice &middot; 4 Questions</div>
+    </div>
+
+    <h2>Primary Source to Watch Next</h2>
+    <div class="sources">
+      <ul>
+        <li><strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=EKein_IqEvc&list=PLFgAxjzW3NjamjBhic64p3_BViC6sOceI" target="_blank" rel="noopener">CS401 Lecture 1 — Muhammad Saqib (World of Education)</a>. Everything he mentions will click immediately now that you have the mental picture.</li>
+        <li><strong>Reference Manual:</strong> <a href="https://archive.org/details/intel-8086-family-users-manual" target="_blank" rel="noopener">Intel 8086 Family User's Manual</a>, Chapter 1.</li>
+      </ul>
+    </div>
+
+    <div class="teacher-note">
+      <strong>Ask your teacher:</strong> If <em>any</em> single word or idea still feels fuzzy—even something basic like binary counting or why 20 wires = 1 MB—ask me right in chat! When you're ready, tell me how the quiz went and we'll move to <strong>Lesson 02: Binary &amp; Hexadecimal Made Easy</strong> (or straight into the 14 Registers, whichever you prefer).
+    </div>
+  </div>
+
+  <script src="../assets/quiz.js"></script>
+  <script>
+    // 1. Bit-to-Byte Switchboard
+    (function () {
+      const weights = [128, 64, 32, 16, 8, 4, 2, 1];
+      const bits = [0, 0, 0, 0, 0, 0, 0, 0];
+      const row = document.getElementById("bits-row");
+      const binOut = document.getElementById("bin-out");
+      const decOut = document.getElementById("dec-out");
+      const fb = document.getElementById("byte-fb");
+      let target = null;
+
+      function update() {
+        let total = 0;
+        bits.forEach((b, i) => {
+          if (b) total += weights[i];
+        });
+        binOut.textContent = bits.join("");
+        decOut.textContent = total;
+
+        if (target !== null) {
+          if (total === target) {
+            fb.className = "quiz-feedback show ok";
+            fb.textContent = `Nailed it! ${bits.join("")} in binary equals ${target}.`;
+          } else {
+            fb.className = "quiz-feedback show err";
+            fb.textContent = `Goal: flip switches to make ${target}. (Current sum: ${total})`;
+          }
+        }
+      }
+
+      weights.forEach((w, i) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "bit-btn";
+        btn.innerHTML = `<span class="bit-val">0</span><span class="bit-wt">${w}</span>`;
+        btn.addEventListener("click", () => {
+          bits[i] = bits[i] ? 0 : 1;
+          btn.classList.toggle("is-on", bits[i] === 1);
+          btn.querySelector(".bit-val").textContent = bits[i];
+          update();
+        });
+        row.appendChild(btn);
+      });
+
+      const challenges = [5, 10, 19, 42, 130];
+      let cIdx = 0;
+      document.getElementById("btn-target").addEventListener("click", () => {
+        target = challenges[cIdx];
+        cIdx = (cIdx + 1) % challenges.length;
+        update();
+      });
+
+      update();
+    })();
+
+    // 2. Bus Cycle Simulator
+    (function () {
+      const scenarios = [
+        {
+          text: "Scenario 1 of 2: The CPU wants to READ whatever byte is stored inside Locker #5.",
+          addr: "5",
+          ctrl: "READ",
+          data: "RAM_TO_CPU",
+          ok: "Exactly right! The CPU puts Locker #5 on the Address Bus, sends READ on the Control Bus, and RAM sends the byte back to the CPU over the Data Bus."
+        },
+        {
+          text: "Scenario 2 of 2: The CPU wants to WRITE (save) the number 42 into Locker #12.",
+          addr: "12",
+          ctrl: "WRITE",
+          data: "CPU_TO_RAM",
+          ok: "Spot on! The Address Bus always carries the locker number (#12, never the data 42), Control sends WRITE, and the Data Bus carries 42 from CPU to RAM."
+        }
+      ];
+
+      let idx = 0;
+      const taskEl = document.getElementById("sim-task");
+      const selAddr = document.getElementById("sel-addr");
+      const selCtrl = document.getElementById("sel-ctrl");
+      const selData = document.getElementById("sel-data");
+      const fbEl = document.getElementById("sim-feedback");
+
+      function loadScenario() {
+        taskEl.textContent = scenarios[idx].text;
+        selAddr.value = "";
+        selCtrl.value = "";
+        selData.value = "";
+        fbEl.className = "quiz-feedback";
+        fbEl.textContent = "";
+      }
+
+      document.getElementById("btn-run").addEventListener("click", () => {
+        const s = scenarios[idx];
+        const errs = [];
+        if (selAddr.value !== s.addr) errs.push("Check the Address Bus—it must hold the locker number, not the data.");
+        if (selCtrl.value !== s.ctrl) errs.push("Check the Control Bus—are we reading from RAM or writing to RAM?");
+        if (selData.value !== s.data) errs.push("Check the Data Bus direction—which way is the byte moving?");
+
+        if (errs.length === 0) {
+          fbEl.className = "quiz-feedback show ok";
+          fbEl.textContent = s.ok;
+        } else {
+          fbEl.className = "quiz-feedback show err";
+          fbEl.textContent = errs.join(" ");
+        }
+      });
+
+      document.getElementById("btn-next").addEventListener("click", () => {
+        idx = (idx + 1) % scenarios.length;
+        loadScenario();
+      });
+
+      loadScenario();
+    })();
+
+    // 3. Retrieval Quiz (all options matched in word count & character length)
+    renderQuiz(document.querySelector("[data-quiz]"), [
+      {
+        prompt: "What is a single 'bit' inside a computer?",
+        options: [
+          "Eight switches in a row",
+          "One switch: on or off",
+          "One numbered box in RAM",
+          "One command to the CPU"
+        ],
+        answer: 1,
+        explanation: "A bit is a single ON/OFF switch (1 or 0). Eight bits grouped together make one byte.",
+        hint: "Think of the smallest possible piece—just one switch."
+      },
+      {
+        prompt: "In the kitchen analogy, what are CPU registers?",
+        options: [
+          "The giant pantry of shelves",
+          "The hallway between both rooms",
+          "The tiny cutting board workspace",
+          "The recipe written in English"
+        ],
+        answer: 2,
+        explanation: "Registers are tiny, ultra-fast storage slots built directly inside the CPU so it doesn't have to walk back to RAM every step.",
+        hint: "They sit right inside the CPU where the chef works."
+      },
+      {
+        prompt: "Which bus tells RAM WHICH numbered locker to open?",
+        options: [
+          "Address bus, one-way wires",
+          "Data bus, two-way wires",
+          "Control bus, signal wires",
+          "Power bus, battery wires"
+        ],
+        answer: 0,
+        explanation: "The Address Bus is one-way (CPU to RAM) and carries the locker number (address).",
+        hint: "Which bus answers the question 'where?'"
+      },
+      {
+        prompt: "Why does the Intel 8088 have 20 address wires?",
+        options: [
+          "To hold 20 CPU registers",
+          "To move 20 bytes together",
+          "To run 20 apps together",
+          "To number 1 MB lockers"
+        ],
+        answer: 3,
+        explanation: "With 20 wires (each 0 or 1), the 8088 can create 2^20 = 1,048,576 unique addresses—that's 1 MB of RAM.",
+        hint: "Address wires are used to number memory lockers."
+      }
+    ]);
+  </script>
+</body>
+</html>

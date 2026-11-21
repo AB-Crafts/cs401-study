@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS401 Interactive Study Guide — From Scratch</title>
+  <link rel="stylesheet" href="assets/course.css">
+  <style>
+    .lesson-list {
+      list-style: none;
+      padding: 0;
+      margin: 1.25rem 0;
+    }
+    .lesson-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      padding: 0.9rem 1rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 0.65rem;
+    }
+    .lesson-item a {
+      font-weight: 600;
+      font-size: 1.05rem;
+      text-decoration: none;
+    }
+    .lesson-item a:hover {
+      text-decoration: underline;
+    }
+    .lesson-item span {
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="course-nav">
+      <span class="course-tag">VU CS401 &middot; Assembly Language</span>
+      <nav>
+        <a href="lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01</a>
+        <a href="reference/glossary.html">Glossary</a>
+      </nav>
+    </div>
+
+    <header class="lesson-header">
+      <div class="lesson-meta">Interactive Course Workspace &middot; Built From Zero</div>
+      <h1>CS401: Computer Architecture &amp; Assembly Language</h1>
+      <p class="subtitle">Short, hands-on lessons built from scratch to help you ace VU CS401 while truly understanding how the CPU works.</p>
+    </header>
+
+    <h2>Lessons</h2>
+    <ul class="lesson-list">
+      <li class="lesson-item">
+        <div>
+          <a href="lessons/0001-buses-memory-and-the-8088-cpu.html">Lesson 01: From Switches to the Intel 8088</a>
+          <div style="font-size: 0.9rem; color: var(--muted); margin-top: 0.2rem;">Bits, bytes, the kitchen analogy, the three system buses, and the 8088's core specs.</div>
+        </div>
+        <span>~7 min</span>
+      </li>
+    </ul>
+
+    <h2>Reference Sheets</h2>
+    <ul class="lesson-list">
+      <li class="lesson-item">
+        <div>
+          <a href="reference/glossary.html">CS401 Plain-English Glossary</a>
+          <div style="font-size: 0.9rem; color: var(--muted); margin-top: 0.2rem;">Print-friendly quick reference for every term introduced in the course.</div>
+        </div>
+        <span>Reference</span>
+      </li>
+    </ul>
+  </div>
+</body>
+</html>
